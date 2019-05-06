@@ -1,0 +1,23 @@
+import pandas as pd
+from numpy.polynomial.polynomial import polyfit
+import matplotlib.pyplot as plt
+# load dataset
+Air = pd.read_csv (r'C:\Users\mitsc\Codes\Fellow\Airline Safety\airline-safety\airline-safety.csv')
+
+#Clean dataset and set up safety index
+Air['Total Incidents'] = Air['incidents_85_99'] + Air['fatal_accidents_85_99'] + Air['incidents_00_14'] + Air['fatal_accidents_00_14']
+Air['Total_fatalities_85_14'] = Air['fatalities_85_99'] + Air['fatalities_00_14']
+Air['Safety Index'] = (Air['Total Incidents']/(Air['Total_fatalities_85_14']))
+Air = Air.replace([np.inf, -np.inf], np.nan)
+Air = Air.fillna(1)
+Air.loc[Air['Safety Index'] > 1, 'Safety Index'] = 1
+#Air[Air['Safety Index'] > 1] = 
+Air = Air.sort_values('Safety Index', ascending=False)
+
+# Plot safety index
+Air.plot.bar(x='airline', y='Safety Index', grid=False, figsize=(20, 15), color = 'limegreen')
+
+# Plot hist of incidents 
+Air.hist(column='Total Incidents', bins = 56, figsize=(15, 10), grid = False)
+
+
